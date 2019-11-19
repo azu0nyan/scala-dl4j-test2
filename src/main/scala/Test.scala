@@ -1,6 +1,6 @@
 import org.deeplearning4j.common.resources.{DL4JResources, ResourceType}
 
-import scala.jdk.CollectionConverters._
+//import scala.jdk.CollectionConverters._
 import org.deeplearning4j.datasets.iterator._
 import org.deeplearning4j.datasets.iterator.impl._
 import org.deeplearning4j.nn.api._

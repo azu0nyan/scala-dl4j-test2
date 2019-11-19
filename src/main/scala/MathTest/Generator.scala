@@ -5,7 +5,7 @@ import java.io.{File, PrintWriter}
 import scala.util.Random
 
 object Generator {
-  val count = 10_000
+  val count = 10000
   val seed = 123
   val numArguments = 5
   val numResults = 1

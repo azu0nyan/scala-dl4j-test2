@@ -6,20 +6,23 @@ import java.io.{File, PrintWriter}
 import scala.util.Random
 
 object NotesGenerator {
-  val count = 10_000
+  val count = 100000
   val seed = 123
   val samplesPerSec = 44100
   val sampleDt: Double = 1d / samplesPerSec.toDouble
-  val samplesPerEntry = 100
+  val samplesPerEntry = 400
 
 
   val periodicFunction: Double => Double = x => math.sin(x * (2d * math.Pi))
 
   def generate(): Seq[Seq[Any]] = {
+    println(s"generating $count entries samples per entry $samplesPerEntry samples per sec $samplesPerSec")
     val r = new Random(seed)
     for (_ <- 0 until count) yield {
       val note = Note(4, r.nextInt(12))
-      val func: Int => Double = x => periodicFunction.apply(x * sampleDt * note.freq)
+
+      val offset:Double = r.nextDouble()
+      val func: Int => Double = x => periodicFunction.apply(offset + x * sampleDt * note.freq)
 
       (for (i <- 0 until samplesPerEntry) yield func(i)) :+ note.toneNumber
     }
