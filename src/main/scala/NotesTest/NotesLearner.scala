@@ -64,13 +64,15 @@ object NotesLearner extends App {
     .updater(new Sgd(0.1))
     .l2(1e-4)
     .list()
-    .layer(new DenseLayer.Builder().nIn(numInputs).nOut(3)
-      .build())
-    .layer(new DenseLayer.Builder().nIn(3).nOut(3)
-      .build())
+    .layer(new DenseLayer.Builder().nIn(numInputs).nOut(512).build())
+    .layer(new DenseLayer.Builder().nIn(512).nOut(256).build())
+    .layer(new DenseLayer.Builder().nIn(256).nOut(128).build())
+    .layer(new DenseLayer.Builder().nIn(128).nOut(64).build())
+    .layer(new DenseLayer.Builder().nIn(64).nOut(32).build())
+    .layer(new DenseLayer.Builder().nIn(32).nOut(24).build())
     .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
       .activation(Activation.SOFTMAX)
-      .nIn(3).nOut(outputNum).build())
+      .nIn(24).nOut(outputNum).build())
     .build();
 
   //run the model
@@ -79,31 +81,17 @@ object NotesLearner extends App {
   model.setListeners(new ScoreIterationListener(100));
 
 
-  for (i <- 0 until 1000) {
+  for (i <- 0 until 100000) {
+    if(i % 1000 == 0){
+      //evaluate the model on the test set
+      val eval: Evaluation = new Evaluation(12);
+      val output: INDArray = model.output(testData.getFeatures());
+      eval.eval(testData.getLabels(), output);
+      log.info(eval.stats());
+    }
     model.fit(trainingData)
   };
 
 
-  //evaluate the model on the test set
-  val eval: Evaluation = new Evaluation(12);
-  val output: INDArray = model.output(testData.getFeatures());
-  eval.eval(testData.getLabels(), output);
-  log.info(eval.stats());
-  //  println(output)
 
-  println("--------------------------------------")
-  println("--------------------------------------")
-  println("--------------------------------------")
-  println("--------------------------------------")
-  /*for(i <- 0 until output.rows()){
-    var maxi = 0
-    for(j<- 0 until 12) {
-      if(output.getRow(i).getDouble(j.toLong) >output.getRow(i).getDouble(maxi.toLong)){
-        maxi = j
-      }
-    }
-
-    var sum = (for(k <- 0 until 5) yield testData.getFeatures.getRow(i).getDouble(k.toLong)).sum.toInt
-
-    println(output.getRow(i) + " " + testData.getFeatures().getRow(i) + " " + maxi + " " + sum)*/
 }

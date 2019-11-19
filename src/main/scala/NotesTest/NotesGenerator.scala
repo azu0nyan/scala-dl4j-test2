@@ -10,7 +10,7 @@ object NotesGenerator {
   val seed = 123
   val samplesPerSec = 44100
   val sampleDt: Double = 1d / samplesPerSec.toDouble
-  val samplesPerEntry = 400
+  val samplesPerEntry = 512
 
 
   val periodicFunction: Double => Double = x => math.sin(x * (2d * math.Pi))
